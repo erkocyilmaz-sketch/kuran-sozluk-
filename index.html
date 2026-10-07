@@ -33,7 +33,7 @@
       --esma-text: #6b21a8;
       --esma-border: #9333ea;
 
-      /* 3. İKİSİ BİRDEN (ÇİFT VARLIK) VURGU RENKLERİ (İndigo - Mor/Mavi Arası) */
+      /* 3. İKİSİ BİRDEN VURGU RENKLERİ (İndigo) */
       --both-bg: #e0e7ff;
       --both-text: #3730a3;
       --both-border: #4f46e5;
@@ -448,8 +448,20 @@
       body { padding: 0.4rem 0.2rem; }
       .search-panel { padding: 0.65rem; gap: 8px; }
       .search-row { flex-wrap: wrap; }
-      .btn-search { flex: 1 1 calc(70% - 3px); }
-      .btn-reset { flex: 1 1 calc(30% - 3px); }
+      
+      .search-row .input-wrapper {
+        flex: 1 1 100%;
+        width: 100%;
+      }
+
+      .btn-search { 
+        flex: 2 1 auto;
+      }
+
+      .btn-reset { 
+        flex: 1 1 auto;
+      }
+
       .excel-grid { grid-template-columns: 1fr; }
       .excel-upload-box { height: 36px; }
       input[type="text"], .btn-search, .btn-reset { height: 36px; }
@@ -801,7 +813,8 @@
     return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
   }
 
-  function buildFlexibleRegexPattern(termStr) {
+  // 2. YÖNTEM: İZİNLİ TÜRKÇE EKLER İLE DÜZENLENMİŞ REGEX FONKSİYONU
+  function buildFlexibleRegexPattern(termStr, globalFlag = true) {
     let chars = termStr.split('');
     let pattern = chars.map(ch => {
       let lch = ch.toLowerCase();
@@ -816,12 +829,19 @@
       return escapeRegExp(ch);
     }).join('');
 
-    return new RegExp(`(?<=[^a-zA-ZçğıöşüÇĞİÖŞÜâîûÂÎÛ]|^)(${pattern})`, 'gi');
+    let flags = globalFlag ? 'gi' : 'i';
+
+    // Türkçe yaygın isim ve fiil eklerini tanımlayan yapı
+    // Bu sayede "sabır-dan", "acı-lar", "söz-ler-i" eşleşir ama "acıkırsın" içindeki "kir" elenir.
+    const trSuffixes = "(?:lar|ler|da|de|dan|den|ya|ye|a|e|ın|in|un|ün|ım|im|sı|si|su|sü|nız|niz|dir|dirler|dirlerse)?";
+
+    // Kökün önünde harf olamaz + kökten sonra sadece geçerli Türkçe ekler gelebilir (sonrasında kelime bitmelidir)
+    return new RegExp(`(?<![a-zA-ZçğıöşüÇĞİÖŞÜ])(${pattern}${trSuffixes})(?![a-zA-ZçğıöşüÇĞİÖŞÜ])`, flags);
   }
 
   function highlightSearchQuery(container, query) {
     if (!query) return;
-    let regex = buildFlexibleRegexPattern(query);
+    let regex = buildFlexibleRegexPattern(query, true);
 
     const traverse = (node) => {
       if (node.nodeType === Node.TEXT_NODE) {
@@ -876,7 +896,8 @@
     sortedKeys.forEach(normKey => {
       let item = combinedMap[normKey];
       let origText = item.inEsma ? item.origEsma : item.origDict;
-      let regex = buildFlexibleRegexPattern(origText);
+      
+      let globalRegex = buildFlexibleRegexPattern(origText, true);
       let encodedKey = encodeURIComponent(normKey);
 
       let className = "dict-term";
@@ -890,26 +911,68 @@
         typeAttr = "esma";
       }
 
-      const highlightNodes = (node) => {
+      let hasBeenHighlightedInThisVerse = false;
+
+      const traverseAndReplaceAll = (node) => {
+        if (hasBeenHighlightedInThisVerse) return;
+
         if (node.nodeType === Node.TEXT_NODE) {
           let parent = node.parentNode;
-          if (parent && parent.classList && (parent.classList.contains('dict-term') || parent.classList.contains('esma-term') || parent.classList.contains('both-term') || parent.classList.contains('highlight'))) {
+          if (parent && parent.classList && (
+              parent.classList.contains('dict-term') || 
+              parent.classList.contains('esma-term') || 
+              parent.classList.contains('both-term') || 
+              parent.classList.contains('highlight')
+          )) {
             return;
           }
+
           let val = node.nodeValue;
-          if (regex.test(val)) {
-            let span = document.createElement('span');
-            span.innerHTML = val.replace(regex, `<span class="${className}" data-type="${typeAttr}" data-key="${encodedKey}">$1</span>`);
-            parent.replaceChild(span, node);
+          let match;
+
+          if (!hasBeenHighlightedInThisVerse && globalRegex.test(val)) {
+            globalRegex.lastIndex = 0;
+            let frag = document.createDocumentFragment();
+            let lastIdx = 0;
+
+            if ((match = globalRegex.exec(val)) !== null) {
+              let matchedText = match[0];
+              let matchIndex = match.index;
+
+              if (matchIndex > lastIdx) {
+                frag.appendChild(document.createTextNode(val.substring(lastIdx, matchIndex)));
+              }
+
+              let span = document.createElement('span');
+              span.className = className;
+              span.setAttribute('data-type', typeAttr);
+              span.setAttribute('data-key', encodedKey);
+              span.textContent = matchedText;
+              frag.appendChild(span);
+
+              lastIdx = matchIndex + matchedText.length;
+              
+              hasBeenHighlightedInThisVerse = true;
+            }
+
+            if (lastIdx < val.length) {
+              frag.appendChild(document.createTextNode(val.substring(lastIdx)));
+            }
+
+            parent.replaceChild(frag, node);
           }
         } else if (node.nodeType === Node.ELEMENT_NODE) {
-          if (!node.classList.contains('dict-term') && !node.classList.contains('esma-term') && !node.classList.contains('both-term') && !node.classList.contains('highlight')) {
-            Array.from(node.childNodes).forEach(highlightNodes);
+          if (!node.classList.contains('dict-term') && 
+              !node.classList.contains('esma-term') && 
+              !node.classList.contains('both-term') && 
+              !node.classList.contains('highlight')) {
+            
+            Array.from(node.childNodes).forEach(traverseAndReplaceAll);
           }
         }
       };
 
-      highlightNodes(container);
+      traverseAndReplaceAll(container);
     });
   }
 
@@ -1050,10 +1113,8 @@
       verseTextDiv.className = 'verse-text';
       verseTextDiv.textContent = item.metin;
 
-      // 1. Önce Birleştirilmiş Sözlük & Esma Vurgularını Uygula
       applyDictionaryToElement(verseTextDiv);
 
-      // 2. Sonra Arama Vurgusunu (Sarı Renk) Uygula
       if (highlightQuery) {
         highlightSearchQuery(verseTextDiv, highlightQuery);
       }
