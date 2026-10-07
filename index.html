@@ -13,14 +13,14 @@
 
   <style>
     :root {
-      --bg-color: #f1f5f9;
+      --bg-color: #f8fafc;
       --card-bg: #ffffff;
       --primary: #0f172a;
       --primary-light: #1e293b;
       --accent: #d97706;
       --accent-light: #fef3c7;
-      --text: #0f172a;
-      --border: #cbd5e1;
+      --text: #1e293b;
+      --border: #e2e8f0;
       --muted: #64748b;
       
       /* 1. Sözlük Vurgu Renkleri (Mavi) */
@@ -28,10 +28,15 @@
       --dict-text: #0369a1;
       --dict-border: #0284c7;
 
-      /* 2. Esma Vurgu Renkleri (Yeni: Mor / Menekşe Tonları) */
+      /* 2. Esma Vurgu Renkleri (Mor) */
       --esma-bg: #f3e8ff;
       --esma-text: #6b21a8;
       --esma-border: #9333ea;
+
+      /* 3. İKİSİ BİRDEN (ÇİFT VARLIK) VURGU RENKLERİ (İndigo - Mor/Mavi Arası) */
+      --both-bg: #e0e7ff;
+      --both-text: #3730a3;
+      --both-border: #4f46e5;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -40,7 +45,7 @@
       font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
       background-color: var(--bg-color);
       color: var(--text);
-      padding: 1rem 0.5rem;
+      padding: 0.75rem 0.5rem;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -50,27 +55,28 @@
 
     .container { 
       width: 100%; 
-      max-width: 960px; 
+      max-width: 900px; 
       flex: 1; 
     }
 
     .header { 
       text-align: center; 
-      margin-bottom: 1.25rem; 
+      margin-bottom: 1rem; 
       padding: 0 0.5rem;
     }
     
     .header h1 { 
-      font-size: clamp(1.2rem, 4vw, 1.75rem); 
+      font-size: clamp(1.15rem, 3.5vw, 1.6rem); 
       color: var(--primary); 
-      margin-bottom: 0.3rem; 
+      margin-bottom: 0.25rem; 
       font-weight: 800;
+      letter-spacing: -0.3px;
     }
 
     .header p { 
       color: var(--muted); 
-      font-size: clamp(0.75rem, 2.5vw, 0.9rem); 
-      margin-bottom: 0.6rem; 
+      font-size: clamp(0.72rem, 2vw, 0.85rem); 
+      margin-bottom: 0.5rem; 
     }
 
     .special-tag {
@@ -78,78 +84,84 @@
       background: linear-gradient(135deg, #1e293b, #0f172a);
       color: #f59e0b;
       font-weight: 700;
-      font-size: clamp(0.7rem, 2vw, 0.82rem);
-      padding: 0.4rem 1rem;
+      font-size: clamp(0.65rem, 1.8vw, 0.78rem);
+      padding: 0.3rem 0.85rem;
       border-radius: 20px;
       letter-spacing: 0.5px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.12);
+      box-shadow: 0 2px 5px rgba(0,0,0,0.08);
     }
 
     .status-container {
       display: flex;
       justify-content: center;
-      gap: 8px;
+      gap: 6px;
       flex-wrap: wrap;
-      margin-bottom: 1rem;
+      margin-bottom: 0.85rem;
     }
 
     .badge-status {
       display: inline-flex;
       align-items: center;
       gap: 4px;
-      padding: 0.4rem 0.85rem;
-      border-radius: 20px;
-      font-size: 0.78rem;
+      padding: 0.3rem 0.65rem;
+      border-radius: 16px;
+      font-size: 0.73rem;
       font-weight: 600;
       background: #ffffff;
       border: 1px solid var(--border);
       color: var(--muted);
-      box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+      box-shadow: 0 1px 2px rgba(0,0,0,0.02);
     }
 
     .search-panel {
       background: white;
-      padding: 1rem;
-      border-radius: 14px;
+      padding: 0.85rem;
+      border-radius: 12px;
       border: 1px solid var(--border);
-      box-shadow: 0 4px 15px rgba(0,0,0,0.04);
-      margin-bottom: 1.25rem;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.03);
+      margin-bottom: 1rem;
       display: flex;
       flex-direction: column;
-      gap: 14px;
+      gap: 10px;
     }
 
     .section-title {
-      font-size: 0.8rem;
+      font-size: 0.72rem;
       font-weight: 700;
       text-transform: uppercase;
-      letter-spacing: 0.5px;
+      letter-spacing: 0.4px;
       color: var(--muted);
-      margin-bottom: 6px;
+      margin-bottom: 4px;
     }
 
     .search-row {
       display: flex;
-      gap: 8px;
+      gap: 6px;
       position: relative;
-      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .input-wrapper {
+      position: relative;
+      flex: 1;
+      width: 100%;
     }
 
     input[type="text"] {
-      padding: 0.75rem 0.9rem;
-      font-size: 0.92rem;
-      border: 1.5px solid var(--border);
-      border-radius: 10px;
-      outline: none;
-      flex: 1 1 200px;
       width: 100%;
+      padding: 0.55rem 0.75rem;
+      font-size: 0.88rem;
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      outline: none;
       background: white;
       transition: border-color 0.2s, box-shadow 0.2s;
+      height: 38px;
     }
 
     input[type="text"]:focus {
       border-color: var(--accent);
-      box-shadow: 0 0 0 3px rgba(217, 119, 6, 0.15);
+      box-shadow: 0 0 0 3px rgba(217, 119, 6, 0.12);
     }
 
     .suggestions-box {
@@ -158,33 +170,36 @@
       left: 0;
       right: 0;
       background: white;
-      border: 2px solid var(--accent);
-      border-radius: 10px;
-      max-height: 220px;
+      border: 1.5px solid var(--accent);
+      border-radius: 8px;
+      max-height: 200px;
       overflow-y: auto;
       z-index: 1000;
-      box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+      box-shadow: 0 6px 18px rgba(0,0,0,0.12);
       display: none;
-      margin-top: 4px;
+      margin-top: 3px;
     }
 
     .suggestion-item {
-      padding: 0.75rem 1rem;
+      padding: 0.55rem 0.8rem;
       cursor: pointer;
       display: flex;
       justify-content: space-between;
       align-items: center;
+      font-size: 0.82rem;
       border-bottom: 1px solid var(--border);
     }
+
+    .suggestion-item:last-child { border-bottom: none; }
 
     .suggestion-item:hover {
       background-color: var(--accent-light);
     }
 
     .similarity-badge {
-      font-size: 0.72rem;
+      font-size: 0.68rem;
       background: #e2e8f0;
-      padding: 2px 6px;
+      padding: 2px 5px;
       border-radius: 4px;
       color: #334155;
       font-weight: 600;
@@ -192,19 +207,20 @@
 
     .excel-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 10px;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 8px;
     }
 
     .excel-upload-box {
       background: #f8fafc;
       border: 1.5px dashed var(--border);
-      padding: 0.75rem 0.9rem;
-      border-radius: 10px;
+      padding: 0.45rem 0.75rem;
+      border-radius: 8px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 10px;
+      gap: 8px;
+      height: 38px;
     }
 
     .excel-upload-box input[type="file"] { display: none; }
@@ -212,10 +228,10 @@
     .btn-excel {
       background: #0284c7;
       color: white;
-      padding: 0.5rem 0.85rem;
-      border-radius: 8px;
+      padding: 0.35rem 0.65rem;
+      border-radius: 6px;
       cursor: pointer;
-      font-size: 0.8rem;
+      font-size: 0.75rem;
       font-weight: 600;
       white-space: nowrap;
       user-select: none;
@@ -229,71 +245,74 @@
     .btn-excel:hover { opacity: 0.9; }
 
     .btn-search {
-      padding: 0.75rem 1.2rem;
-      font-size: 0.9rem;
+      height: 38px;
+      padding: 0 1rem;
+      font-size: 0.85rem;
       font-weight: 600;
       background-color: var(--primary);
       color: white;
       border: none;
-      border-radius: 10px;
+      border-radius: 8px;
       cursor: pointer;
       white-space: nowrap;
-      flex: 1 1 auto;
       transition: background-color 0.2s;
     }
 
     .btn-search:hover { background-color: var(--primary-light); }
 
     .btn-reset {
-      padding: 0.75rem 1rem;
+      height: 38px;
+      padding: 0 0.85rem;
       background: #e2e8f0;
       color: #334155;
       border: none;
-      border-radius: 10px;
+      border-radius: 8px;
       cursor: pointer;
       font-weight: 600;
-      font-size: 0.9rem;
-      flex: 0 0 auto;
+      font-size: 0.85rem;
+      white-space: nowrap;
     }
 
+    .btn-reset:hover { background: #cbd5e1; }
+
     .stats { 
-      font-size: 0.85rem; 
+      font-size: 0.8rem; 
       color: var(--muted); 
-      margin-bottom: 1rem; 
-      padding: 0.65rem 0.9rem;
+      margin-bottom: 0.85rem; 
+      padding: 0.5rem 0.8rem;
       background: #ffffff;
       border: 1px solid var(--border);
-      border-radius: 10px;
+      border-radius: 8px;
       display: flex;
       justify-content: space-between;
       align-items: center;
       flex-wrap: wrap;
-      gap: 8px;
+      gap: 6px;
     }
 
     .count-badge {
       background: var(--primary);
       color: white;
-      padding: 3px 10px;
-      border-radius: 12px;
+      padding: 2px 8px;
+      border-radius: 10px;
       font-weight: 700;
-      font-size: 0.8rem;
+      font-size: 0.75rem;
     }
 
-    .results { display: flex; flex-direction: column; gap: 0.85rem; }
+    .results { display: flex; flex-direction: column; gap: 0.75rem; }
 
     .verse-card {
       background: var(--card-bg);
-      padding: 1.1rem;
-      border-radius: 12px;
+      padding: 0.9rem;
+      border-radius: 10px;
       border: 1px solid var(--border);
-      box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.02);
     }
 
     .verse-header {
       font-weight: 700;
-      margin-bottom: 0.6rem;
-      font-size: 0.92rem;
+      margin-bottom: 0.5rem;
+      font-size: 0.88rem;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -309,52 +328,60 @@
     .verse-badge {
       background: var(--accent-light);
       color: #92400e;
-      padding: 3px 9px;
-      border-radius: 6px;
-      font-size: 0.78rem;
+      padding: 2px 7px;
+      border-radius: 5px;
+      font-size: 0.73rem;
       font-weight: 700;
     }
 
     .verse-text { 
-      line-height: 1.8; 
-      font-size: clamp(0.95rem, 2.5vw, 1.05rem); 
+      line-height: 1.75; 
+      font-size: clamp(0.9rem, 2.3vw, 1rem); 
       word-break: break-word; 
     }
 
     /* --- Vurgulama Stilleri --- */
-    
-    /* Sözlük: Mavi */
     .dict-term {
       background-color: var(--dict-bg);
       color: var(--dict-text);
       border-bottom: 2px dotted var(--dict-border);
       cursor: pointer;
       font-weight: 600;
-      padding: 1px 4px;
-      border-radius: 4px;
+      padding: 1px 3px;
+      border-radius: 3px;
       display: inline;
     }
 
-    /* Esma: Mor */
     .esma-term {
       background-color: var(--esma-bg);
       color: var(--esma-text);
       border-bottom: 2px solid var(--esma-border);
       cursor: pointer;
       font-weight: 700;
-      padding: 1px 4px;
-      border-radius: 4px;
+      padding: 1px 3px;
+      border-radius: 3px;
       display: inline;
     }
 
-    /* Aranan Kelime: Parlak Sarı */
+    .both-term {
+      background-color: var(--both-bg);
+      color: var(--both-text);
+      border-bottom: 2px dashed var(--both-border);
+      cursor: pointer;
+      font-weight: 700;
+      padding: 1px 3px;
+      border-radius: 3px;
+      display: inline;
+    }
+
     mark.highlight {
-      background-color: #fef08a;
-      color: #854d0e;
+      background-color: #fef08a !important;
+      color: #854d0e !important;
       font-weight: bold;
-      padding: 2px 5px;
-      border-radius: 4px;
+      padding: 1px 4px;
+      border-radius: 3px;
       border: 1px solid #fde047;
+      display: inline;
     }
 
     #globalTooltip {
@@ -363,59 +390,69 @@
       background-color: #0f172a;
       color: #ffffff;
       padding: 10px 14px;
-      border-radius: 10px;
-      font-size: 0.85rem;
+      border-radius: 8px;
+      font-size: 0.8rem;
       font-weight: 400;
       max-width: 320px;
-      box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.25);
       z-index: 10000;
-      line-height: 1.5;
+      line-height: 1.45;
       pointer-events: auto;
     }
 
     #globalTooltip strong {
       color: #f59e0b;
       display: block;
-      margin-bottom: 4px;
+      margin-bottom: 3px;
       border-bottom: 1px solid #334155;
-      padding-bottom: 3px;
+      padding-bottom: 2px;
+    }
+
+    #globalTooltip .tooltip-sec {
+      margin-bottom: 6px;
+    }
+    #globalTooltip .tooltip-sec:last-child {
+      margin-bottom: 0;
     }
 
     #globalTooltip ol {
-      margin-left: 1rem;
+      margin-left: 0.9rem;
       padding-left: 0;
     }
 
     #globalTooltip li {
-      margin-bottom: 3px;
+      margin-bottom: 2px;
     }
 
     .empty-state {
       text-align: center;
-      padding: 2.5rem 1rem;
+      padding: 2rem 1rem;
       color: var(--muted);
       background: white;
-      border-radius: 12px;
+      border-radius: 10px;
       border: 1px solid var(--border);
-      font-size: 0.92rem;
+      font-size: 0.88rem;
     }
 
     .footer {
       text-align: center;
-      margin-top: 2rem;
-      padding: 1rem 0;
+      margin-top: 1.5rem;
+      padding: 0.8rem 0;
       color: var(--muted);
-      font-size: 0.78rem;
+      font-size: 0.72rem;
       border-top: 1px solid var(--border);
       width: 100%;
     }
 
-    @media (max-width: 600px) {
-      body { padding: 0.5rem 0.25rem; }
-      .search-panel { padding: 0.85rem; }
+    @media (max-width: 640px) {
+      body { padding: 0.4rem 0.2rem; }
+      .search-panel { padding: 0.65rem; gap: 8px; }
+      .search-row { flex-wrap: wrap; }
+      .btn-search { flex: 1 1 calc(70% - 3px); }
+      .btn-reset { flex: 1 1 calc(30% - 3px); }
       .excel-grid { grid-template-columns: 1fr; }
-      .search-row { flex-direction: column; }
-      .btn-search, .btn-reset { width: 100%; }
+      .excel-upload-box { height: 36px; }
+      input[type="text"], .btn-search, .btn-reset { height: 36px; }
     }
   </style>
 </head>
@@ -440,15 +477,19 @@
     <div>
       <div class="section-title">1. Sure İsmi Veya Numarası İle Arama (%85 Akıllı Eşleşme)</div>
       <div class="search-row">
-        <input type="text" id="surahSearchInput" placeholder="Sure adı veya numarası (Örn: 2, nisa, bakara, fatiha)..." oninput="onSurahInput()">
-        <div class="suggestions-box" id="suggestionsBox"></div>
+        <div class="input-wrapper">
+          <input type="text" id="surahSearchInput" placeholder="Sure adı veya numarası (Örn: 2, nisa, bakara)..." oninput="onSurahInput()">
+          <div class="suggestions-box" id="suggestionsBox"></div>
+        </div>
       </div>
     </div>
 
     <div>
       <div class="section-title">2. Meal İçi Kelime Arama</div>
       <div class="search-row">
-        <input type="text" id="keywordInput" placeholder="Ayet meallerinde kelime arayın (Örn: sabır, adalet, merhamet)..." onkeyup="checkKeywordEnter(event)">
+        <div class="input-wrapper">
+          <input type="text" id="keywordInput" placeholder="Ayet meallerinde arayın (Örn: sabır, adalet)..." onkeyup="checkKeywordEnter(event)">
+        </div>
         <button class="btn-search" onclick="searchByKeyword()">Kelime Ara</button>
         <button class="btn-reset" onclick="resetAll()">Temizle</button>
       </div>
@@ -458,13 +499,13 @@
       <div class="section-title">3. Özel Excel Dosyaları Yükleme (Sözlük & Esmalar)</div>
       <div class="excel-grid">
         <div class="excel-upload-box">
-          <span id="excelStatusText" style="font-size: 0.8rem; color: #475569;">1. Excel Sözlük Dosyası</span>
+          <span id="excelStatusText" style="font-size: 0.75rem; color: #475569;">1. Excel Sözlük Dosyası</span>
           <label class="btn-excel" for="excelFileInput" onclick="triggerFileInput('excelFileInput')">📁 Sözlük Yükle</label>
           <input type="file" id="excelFileInput" accept=".xlsx, .xls, .csv" onchange="handleExcelUpload(event, 'dict')">
         </div>
 
         <div class="excel-upload-box">
-          <span id="esmaStatusText" style="font-size: 0.8rem; color: #475569;">2. Excel Esma-ül Hüsna Dosyası</span>
+          <span id="esmaStatusText" style="font-size: 0.75rem; color: #475569;">2. Excel Esma-ül Hüsna Dosyası</span>
           <label class="btn-excel esma-btn" for="esmaFileInput" onclick="triggerFileInput('esmaFileInput')">✨ Esma Yükle</label>
           <input type="file" id="esmaFileInput" accept=".xlsx, .xls, .csv" onchange="handleExcelUpload(event, 'esma')">
         </div>
@@ -538,6 +579,11 @@
       .replace(/â/g, "a").replace(/Â/g, "a")
       .replace(/î/g, "i").replace(/Î/g, "i")
       .replace(/û/g, "u").replace(/Û/g, "u")
+      .replace(/ş/g, "s").replace(/Ş/g, "s")
+      .replace(/ğ/g, "g").replace(/Ğ/g, "g")
+      .replace(/ü/g, "u").replace(/Ü/g, "u")
+      .replace(/ö/g, "o").replace(/Ö/g, "o")
+      .replace(/ç/g, "c").replace(/Ç/g, "c")
       .toLowerCase().trim();
   }
 
@@ -551,7 +597,7 @@
     if (!file) return;
 
     if (typeof XLSX === 'undefined') {
-      statusText.innerHTML = `❌ <b>Excel Kütüphanesi Eksik!</b>`;
+      statusText.innerHTML = `❌ <b>Kütüphane Eksik!</b>`;
       statusText.style.color = "#b91c1c";
       return;
     }
@@ -611,7 +657,7 @@
         statusBadge.style.borderColor = "#86efac";
         statusBadge.style.color = "#166534";
         statusBadge.innerText = `✅ Sözlük (${count})`;
-        statusText.innerHTML = `✅ <b>${count} Kelime</b> (${fileName})`;
+        statusText.innerHTML = `✅ <b>${count} Kelime</b>`;
         statusText.style.color = "#166534";
       } else {
         esmaDictionary = targetDict;
@@ -619,7 +665,7 @@
         statusBadge.style.borderColor = "#e9d5ff";
         statusBadge.style.color = "#6b21a8";
         statusBadge.innerText = `✨ Esmalar (${count})`;
-        statusText.innerHTML = `✨ <b>${count} Esma</b> (${fileName})`;
+        statusText.innerHTML = `✨ <b>${count} Esma</b>`;
         statusText.style.color = "#6b21a8";
       }
 
@@ -698,7 +744,7 @@
         div.className = 'suggestion-item';
         div.innerHTML = `
           <span><b>${m.sureNo}. ${m.sureName}</b> Suresi</span>
-          <span class="similarity-badge">%${m.score} Match</span>
+          <span class="similarity-badge">%${m.score}</span>
         `;
         div.onclick = () => selectSurah(m.sureNo);
         box.appendChild(div);
@@ -720,7 +766,7 @@
     document.getElementById('keywordInput').value = "";
     const matched = quranData.filter(item => parseInt(item.sureNo) === parseInt(sureNo));
     let sureName = sureListesi[sureNo] || "Bilinmeyen";
-    renderResults(matched, null, `${sureNo}. ${sureName} Suresi Getirildi (${matched.length} Ayet)`);
+    renderResults(matched, null, `${sureNo}. ${sureName} Suresi (${matched.length} Ayet)`);
   }
 
   function checkKeywordEnter(e) {
@@ -762,16 +808,17 @@
       if (lch === 'a' || lch === 'â') return '[aAâÂ]';
       if (lch === 'i' || lch === 'î' || lch === 'ı' || lch === 'İ') return '[iİıIîÎ]';
       if (lch === 'u' || lch === 'û') return '[uUûÛ]';
+      if (lch === 'o' || lch === 'ô') return '[oOôÔ]';
+      if (lch === 'e' || lch === 'ê') return '[eEêÊ]';
+      if (lch === 's' || lch === 'ş' || lch === 'Ş') return '[sSşŞ]';
+      if (lch === 'c' || lch === 'ç' || lch === 'Ç') return '[cCçÇ]';
+      if (lch === 'g' || lch === 'ğ' || lch === 'Ğ') return '[gGğĞ]';
       return escapeRegExp(ch);
     }).join('');
 
-    let boundaryBefore = '(?<=^|[^a-zA-ZçğıöşüÇĞİÖŞÜâîûÂÎÛ])';
-    let boundaryAfter = '(?=$|[^a-zA-ZçğıöşüÇĞİÖŞÜâîûÂÎÛ])';
-
-    return new RegExp(`${boundaryBefore}(${pattern})${boundaryAfter}`, 'gi');
+    return new RegExp(`(?<=[^a-zA-ZçğıöşüÇĞİÖŞÜâîûÂÎÛ]|^)(${pattern})`, 'gi');
   }
 
-  // Arama Yapılan Kelimeyi Vurgulama
   function highlightSearchQuery(container, query) {
     if (!query) return;
     let regex = buildFlexibleRegexPattern(query);
@@ -779,7 +826,7 @@
     const traverse = (node) => {
       if (node.nodeType === Node.TEXT_NODE) {
         let parent = node.parentNode;
-        if (parent && parent.classList && (parent.classList.contains('dict-term') || parent.classList.contains('esma-term') || parent.classList.contains('highlight'))) {
+        if (parent && parent.classList && (parent.classList.contains('dict-term') || parent.classList.contains('esma-term') || parent.classList.contains('both-term') || parent.classList.contains('highlight'))) {
           return;
         }
         let val = node.nodeValue;
@@ -789,7 +836,7 @@
           parent.replaceChild(span, node);
         }
       } else if (node.nodeType === Node.ELEMENT_NODE) {
-        if (!node.classList.contains('dict-term') && !node.classList.contains('esma-term') && !node.classList.contains('highlight')) {
+        if (!node.classList.contains('dict-term') && !node.classList.contains('esma-term') && !node.classList.contains('both-term') && !node.classList.contains('highlight')) {
           Array.from(node.childNodes).forEach(traverse);
         }
       }
@@ -798,45 +845,72 @@
     traverse(container);
   }
 
-  // Sözlük ve Esmaları İşaretleme
   function applyDictionaryToElement(container) {
-    const processDict = (dict, className, type) => {
-      let keys = Object.keys(dict).sort((a, b) => b.length - a.length);
-      keys.forEach(normKey => {
-        let termObj = dict[normKey];
-        let regex = buildFlexibleRegexPattern(termObj.original);
-        let encodedKey = encodeURIComponent(normKey);
+    let combinedMap = {};
 
-        const highlightNodes = (node) => {
-          if (node.nodeType === Node.TEXT_NODE) {
-            let parent = node.parentNode;
-            if (parent && parent.classList && (parent.classList.contains('dict-term') || parent.classList.contains('esma-term') || parent.classList.contains('highlight'))) {
-              return;
-            }
-            let val = node.nodeValue;
-            if (regex.test(val)) {
-              let span = document.createElement('span');
-              span.innerHTML = val.replace(regex, `<span class="${className}" data-type="${type}" data-key="${encodedKey}">$1</span>`);
-              parent.replaceChild(span, node);
-            }
-          } else if (node.nodeType === Node.ELEMENT_NODE) {
-            if (!node.classList.contains('dict-term') && !node.classList.contains('esma-term') && !node.classList.contains('highlight')) {
-              Array.from(node.childNodes).forEach(highlightNodes);
-            }
-          }
+    Object.keys(excelDictionary).forEach(k => {
+      combinedMap[k] = {
+        key: k,
+        inDict: true,
+        inEsma: false,
+        origDict: excelDictionary[k].original
+      };
+    });
+
+    Object.keys(esmaDictionary).forEach(k => {
+      if (combinedMap[k]) {
+        combinedMap[k].inEsma = true;
+        combinedMap[k].origEsma = esmaDictionary[k].original;
+      } else {
+        combinedMap[k] = {
+          key: k,
+          inDict: false,
+          inEsma: true,
+          origEsma: esmaDictionary[k].original
         };
+      }
+    });
 
-        highlightNodes(container);
-      });
-    };
+    let sortedKeys = Object.keys(combinedMap).sort((a, b) => b.length - a.length);
 
-    if (Object.keys(excelDictionary).length > 0) {
-      processDict(excelDictionary, 'dict-term', 'dict');
-    }
+    sortedKeys.forEach(normKey => {
+      let item = combinedMap[normKey];
+      let origText = item.inEsma ? item.origEsma : item.origDict;
+      let regex = buildFlexibleRegexPattern(origText);
+      let encodedKey = encodeURIComponent(normKey);
 
-    if (Object.keys(esmaDictionary).length > 0) {
-      processDict(esmaDictionary, 'esma-term', 'esma');
-    }
+      let className = "dict-term";
+      let typeAttr = "dict";
+
+      if (item.inDict && item.inEsma) {
+        className = "both-term";
+        typeAttr = "both";
+      } else if (item.inEsma) {
+        className = "esma-term";
+        typeAttr = "esma";
+      }
+
+      const highlightNodes = (node) => {
+        if (node.nodeType === Node.TEXT_NODE) {
+          let parent = node.parentNode;
+          if (parent && parent.classList && (parent.classList.contains('dict-term') || parent.classList.contains('esma-term') || parent.classList.contains('both-term') || parent.classList.contains('highlight'))) {
+            return;
+          }
+          let val = node.nodeValue;
+          if (regex.test(val)) {
+            let span = document.createElement('span');
+            span.innerHTML = val.replace(regex, `<span class="${className}" data-type="${typeAttr}" data-key="${encodedKey}">$1</span>`);
+            parent.replaceChild(span, node);
+          }
+        } else if (node.nodeType === Node.ELEMENT_NODE) {
+          if (!node.classList.contains('dict-term') && !node.classList.contains('esma-term') && !node.classList.contains('both-term') && !node.classList.contains('highlight')) {
+            Array.from(node.childNodes).forEach(highlightNodes);
+          }
+        }
+      };
+
+      highlightNodes(container);
+    });
   }
 
   function initTooltipEvents() {
@@ -845,20 +919,43 @@
     function showTooltip(target) {
       let type = target.getAttribute('data-type');
       let key = decodeURIComponent(target.getAttribute('data-key'));
-      let dict = type === 'esma' ? esmaDictionary : excelDictionary;
 
-      if (dict && dict[key]) {
-        let data = dict[key];
-        let meaningsHtml = "";
+      let htmlContent = "";
 
-        if (data.meanings.length === 1) {
-          meaningsHtml = `<div>${data.meanings[0]}</div>`;
-        } else {
-          meaningsHtml = "<ol>" + data.meanings.map(m => `<li>${m}</li>`).join('') + "</ol>";
+      if (type === 'both') {
+        let esmaData = esmaDictionary[key];
+        let dictData = excelDictionary[key];
+
+        let esmaMeanings = esmaData ? (esmaData.meanings.length === 1 ? esmaData.meanings[0] : "<ol>" + esmaData.meanings.map(m => `<li>${m}</li>`).join('') + "</ol>") : "";
+        let dictMeanings = dictData ? (dictData.meanings.length === 1 ? dictData.meanings[0] : "<ol>" + dictData.meanings.map(m => `<li>${m}</li>`).join('') + "</ol>") : "";
+
+        let titleName = esmaData ? esmaData.original : (dictData ? dictData.original : key);
+
+        htmlContent = `
+          <div class="tooltip-sec">
+            <strong style="color:#a855f7;">✨ Esma-ül Hüsna: ${titleName}</strong>
+            <div>${esmaMeanings}</div>
+          </div>
+          <div class="tooltip-sec" style="margin-top:8px; border-top:1px dashed #334155; padding-top:6px;">
+            <strong style="color:#38bdf8;">📖 Sözlük Anlamı: ${titleName}</strong>
+            <div>${dictMeanings}</div>
+          </div>
+        `;
+
+      } else {
+        let dict = type === 'esma' ? esmaDictionary : excelDictionary;
+        if (dict && dict[key]) {
+          let data = dict[key];
+          let meaningsHtml = (data.meanings.length === 1) ? `<div>${data.meanings[0]}</div>` : "<ol>" + data.meanings.map(m => `<li>${m}</li>`).join('') + "</ol>";
+          let titlePrefix = type === 'esma' ? '✨ Esma-ül Hüsna' : '📖 Sözlük Anlamı';
+          let titleColor = type === 'esma' ? '#a855f7' : '#38bdf8';
+
+          htmlContent = `<strong style="color:${titleColor};">${titlePrefix}: ${data.original}</strong>${meaningsHtml}`;
         }
+      }
 
-        let titlePrefix = type === 'esma' ? '✨ Esma-ül Hüsna' : '📖 Sözlük Anlamı';
-        tooltip.innerHTML = `<strong>${titlePrefix}: ${data.original}</strong>${meaningsHtml}`;
+      if (htmlContent) {
+        tooltip.innerHTML = htmlContent;
         tooltip.style.display = 'block';
 
         let rect = target.getBoundingClientRect();
@@ -866,9 +963,9 @@
         if (left < 10) left = 10;
         if (left + 280 > window.innerWidth) left = window.innerWidth - 290;
 
-        let top = rect.top + window.scrollY - tooltip.offsetHeight - 8;
+        let top = rect.top + window.scrollY - tooltip.offsetHeight - 6;
         if (top < window.scrollY + 10) {
-          top = rect.bottom + window.scrollY + 8;
+          top = rect.bottom + window.scrollY + 6;
         }
 
         tooltip.style.left = left + 'px';
@@ -877,19 +974,19 @@
     }
 
     document.body.addEventListener('mouseover', function(e) {
-      if (e.target.classList.contains('dict-term') || e.target.classList.contains('esma-term')) {
+      if (e.target.classList.contains('dict-term') || e.target.classList.contains('esma-term') || e.target.classList.contains('both-term')) {
         showTooltip(e.target);
       }
     });
 
     document.body.addEventListener('mouseout', function(e) {
-      if (e.target.classList.contains('dict-term') || e.target.classList.contains('esma-term')) {
+      if (e.target.classList.contains('dict-term') || e.target.classList.contains('esma-term') || e.target.classList.contains('both-term')) {
         tooltip.style.display = 'none';
       }
     });
 
     document.body.addEventListener('click', function(e) {
-      if (e.target.classList.contains('dict-term') || e.target.classList.contains('esma-term')) {
+      if (e.target.classList.contains('dict-term') || e.target.classList.contains('esma-term') || e.target.classList.contains('both-term')) {
         showTooltip(e.target);
         e.stopPropagation();
       } else if (!tooltip.contains(e.target)) {
@@ -953,10 +1050,10 @@
       verseTextDiv.className = 'verse-text';
       verseTextDiv.textContent = item.metin;
 
-      // 1. Sözlük (Mavi) ve Esma (Mor) İşaretleme
+      // 1. Önce Birleştirilmiş Sözlük & Esma Vurgularını Uygula
       applyDictionaryToElement(verseTextDiv);
 
-      // 2. Arama Yapılan Kelimeyi Vurgulama (Parlak Sarı Vurgu)
+      // 2. Sonra Arama Vurgusunu (Sarı Renk) Uygula
       if (highlightQuery) {
         highlightSearchQuery(verseTextDiv, highlightQuery);
       }
