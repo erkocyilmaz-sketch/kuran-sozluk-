@@ -13,14 +13,25 @@
 
   <style>
     :root {
-      --bg-color: #f8fafc;
+      --bg-color: #f1f5f9;
       --card-bg: #ffffff;
-      --primary: #1e293b;
+      --primary: #0f172a;
+      --primary-light: #1e293b;
       --accent: #d97706;
       --accent-light: #fef3c7;
       --text: #0f172a;
-      --border: #e2e8f0;
+      --border: #cbd5e1;
       --muted: #64748b;
+      
+      /* 1. Sözlük Vurgu Renkleri (Mavi) */
+      --dict-bg: #e0f2fe;
+      --dict-text: #0369a1;
+      --dict-border: #0284c7;
+
+      /* 2. Esma Vurgu Renkleri (Yeni: Mor / Menekşe Tonları) */
+      --esma-bg: #f3e8ff;
+      --esma-text: #6b21a8;
+      --esma-border: #9333ea;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -29,92 +40,116 @@
       font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
       background-color: var(--bg-color);
       color: var(--text);
-      padding: 1.25rem 0.75rem;
+      padding: 1rem 0.5rem;
       display: flex;
       flex-direction: column;
       align-items: center;
       min-height: 100vh;
+      -webkit-tap-highlight-color: transparent;
     }
 
-    .container { width: 100%; max-width: 900px; flex: 1; }
+    .container { 
+      width: 100%; 
+      max-width: 960px; 
+      flex: 1; 
+    }
 
-    .header { text-align: center; margin-bottom: 1.25rem; }
-    .header h1 { font-size: 1.5rem; color: var(--primary); margin-bottom: 0.3rem; }
-    .header p { color: var(--muted); font-size: 0.88rem; margin-bottom: 0.5rem; }
+    .header { 
+      text-align: center; 
+      margin-bottom: 1.25rem; 
+      padding: 0 0.5rem;
+    }
+    
+    .header h1 { 
+      font-size: clamp(1.2rem, 4vw, 1.75rem); 
+      color: var(--primary); 
+      margin-bottom: 0.3rem; 
+      font-weight: 800;
+    }
 
-    /* Özel Çalışma İbaresı Alanı */
+    .header p { 
+      color: var(--muted); 
+      font-size: clamp(0.75rem, 2.5vw, 0.9rem); 
+      margin-bottom: 0.6rem; 
+    }
+
     .special-tag {
       display: inline-block;
       background: linear-gradient(135deg, #1e293b, #0f172a);
       color: #f59e0b;
       font-weight: 700;
-      font-size: 0.82rem;
-      padding: 0.35rem 0.9rem;
+      font-size: clamp(0.7rem, 2vw, 0.82rem);
+      padding: 0.4rem 1rem;
       border-radius: 20px;
-      letter-spacing: 0.6px;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-      margin-top: 0.2rem;
+      letter-spacing: 0.5px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.12);
     }
 
     .status-container {
       display: flex;
       justify-content: center;
-      gap: 10px;
+      gap: 8px;
       flex-wrap: wrap;
       margin-bottom: 1rem;
     }
 
     .badge-status {
-      display: inline-block;
-      padding: 0.45rem 1rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 0.4rem 0.85rem;
       border-radius: 20px;
-      font-size: 0.85rem;
+      font-size: 0.78rem;
       font-weight: 600;
-      background: #f0fdf4;
-      border: 1px solid #86efac;
-      color: #166534;
+      background: #ffffff;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      box-shadow: 0 1px 2px rgba(0,0,0,0.03);
     }
 
     .search-panel {
       background: white;
-      padding: 1.1rem;
-      border-radius: 12px;
+      padding: 1rem;
+      border-radius: 14px;
       border: 1px solid var(--border);
-      box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+      box-shadow: 0 4px 15px rgba(0,0,0,0.04);
       margin-bottom: 1.25rem;
       display: flex;
       flex-direction: column;
-      gap: 12px;
+      gap: 14px;
     }
 
     .section-title {
-      font-size: 0.85rem;
+      font-size: 0.8rem;
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 0.5px;
       color: var(--muted);
-      margin-bottom: 2px;
+      margin-bottom: 6px;
     }
 
     .search-row {
       display: flex;
       gap: 8px;
       position: relative;
+      flex-wrap: wrap;
     }
 
     input[type="text"] {
-      padding: 0.8rem 1rem;
-      font-size: 0.95rem;
-      border: 2px solid var(--border);
+      padding: 0.75rem 0.9rem;
+      font-size: 0.92rem;
+      border: 1.5px solid var(--border);
       border-radius: 10px;
       outline: none;
+      flex: 1 1 200px;
       width: 100%;
       background: white;
-      transition: border-color 0.2s;
+      transition: border-color 0.2s, box-shadow 0.2s;
     }
 
     input[type="text"]:focus {
       border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(217, 119, 6, 0.15);
     }
 
     .suggestions-box {
@@ -128,8 +163,9 @@
       max-height: 220px;
       overflow-y: auto;
       z-index: 1000;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.15);
       display: none;
+      margin-top: 4px;
     }
 
     .suggestion-item {
@@ -137,6 +173,7 @@
       cursor: pointer;
       display: flex;
       justify-content: space-between;
+      align-items: center;
       border-bottom: 1px solid var(--border);
     }
 
@@ -145,17 +182,24 @@
     }
 
     .similarity-badge {
-      font-size: 0.75rem;
+      font-size: 0.72rem;
       background: #e2e8f0;
       padding: 2px 6px;
       border-radius: 4px;
       color: #334155;
+      font-weight: 600;
+    }
+
+    .excel-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 10px;
     }
 
     .excel-upload-box {
-      background: #f1f5f9;
-      border: 2px dashed #cbd5e1;
-      padding: 0.8rem 1rem;
+      background: #f8fafc;
+      border: 1.5px dashed var(--border);
+      padding: 0.75rem 0.9rem;
       border-radius: 10px;
       display: flex;
       align-items: center;
@@ -168,17 +212,25 @@
     .btn-excel {
       background: #0284c7;
       color: white;
-      padding: 0.5rem 1rem;
+      padding: 0.5rem 0.85rem;
       border-radius: 8px;
       cursor: pointer;
-      font-size: 0.85rem;
+      font-size: 0.8rem;
       font-weight: 600;
+      white-space: nowrap;
       user-select: none;
+      transition: opacity 0.2s;
     }
 
+    .btn-excel.esma-btn {
+      background: #9333ea;
+    }
+
+    .btn-excel:hover { opacity: 0.9; }
+
     .btn-search {
-      padding: 0.8rem 1.4rem;
-      font-size: 0.95rem;
+      padding: 0.75rem 1.2rem;
+      font-size: 0.9rem;
       font-weight: 600;
       background-color: var(--primary);
       color: white;
@@ -186,25 +238,32 @@
       border-radius: 10px;
       cursor: pointer;
       white-space: nowrap;
+      flex: 1 1 auto;
+      transition: background-color 0.2s;
     }
 
+    .btn-search:hover { background-color: var(--primary-light); }
+
     .btn-reset {
-      padding: 0.8rem 1rem;
+      padding: 0.75rem 1rem;
       background: #e2e8f0;
       color: #334155;
       border: none;
       border-radius: 10px;
       cursor: pointer;
       font-weight: 600;
+      font-size: 0.9rem;
+      flex: 0 0 auto;
     }
 
     .stats { 
-      font-size: 0.9rem; 
+      font-size: 0.85rem; 
       color: var(--muted); 
       margin-bottom: 1rem; 
-      padding: 0.6rem 0.8rem;
-      background: #f1f5f9;
-      border-radius: 8px;
+      padding: 0.65rem 0.9rem;
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: 10px;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -217,24 +276,24 @@
       color: white;
       padding: 3px 10px;
       border-radius: 12px;
-      font-weight: bold;
-      font-size: 0.85rem;
+      font-weight: 700;
+      font-size: 0.8rem;
     }
 
     .results { display: flex; flex-direction: column; gap: 0.85rem; }
 
     .verse-card {
       background: var(--card-bg);
-      padding: 1.1rem 1.25rem;
-      border-radius: 10px;
+      padding: 1.1rem;
+      border-radius: 12px;
       border: 1px solid var(--border);
-      box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+      box-shadow: 0 2px 5px rgba(0,0,0,0.02);
     }
 
     .verse-header {
       font-weight: 700;
-      margin-bottom: 0.5rem;
-      font-size: 0.95rem;
+      margin-bottom: 0.6rem;
+      font-size: 0.92rem;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -250,21 +309,52 @@
     .verse-badge {
       background: var(--accent-light);
       color: #92400e;
-      padding: 2px 8px;
+      padding: 3px 9px;
       border-radius: 6px;
-      font-size: 0.82rem;
+      font-size: 0.78rem;
+      font-weight: 700;
     }
 
-    .verse-text { line-height: 1.75; font-size: 1.02rem; word-break: break-word; }
+    .verse-text { 
+      line-height: 1.8; 
+      font-size: clamp(0.95rem, 2.5vw, 1.05rem); 
+      word-break: break-word; 
+    }
 
+    /* --- Vurgulama Stilleri --- */
+    
+    /* Sözlük: Mavi */
     .dict-term {
-      background-color: #e0f2fe;
-      color: #0369a1;
-      border-bottom: 2px dotted #0284c7;
-      cursor: help;
+      background-color: var(--dict-bg);
+      color: var(--dict-text);
+      border-bottom: 2px dotted var(--dict-border);
+      cursor: pointer;
       font-weight: 600;
-      padding: 0 3px;
-      border-radius: 3px;
+      padding: 1px 4px;
+      border-radius: 4px;
+      display: inline;
+    }
+
+    /* Esma: Mor */
+    .esma-term {
+      background-color: var(--esma-bg);
+      color: var(--esma-text);
+      border-bottom: 2px solid var(--esma-border);
+      cursor: pointer;
+      font-weight: 700;
+      padding: 1px 4px;
+      border-radius: 4px;
+      display: inline;
+    }
+
+    /* Aranan Kelime: Parlak Sarı */
+    mark.highlight {
+      background-color: #fef08a;
+      color: #854d0e;
+      font-weight: bold;
+      padding: 2px 5px;
+      border-radius: 4px;
+      border: 1px solid #fde047;
     }
 
     #globalTooltip {
@@ -272,23 +362,32 @@
       display: none;
       background-color: #0f172a;
       color: #ffffff;
-      padding: 8px 12px;
-      border-radius: 8px;
+      padding: 10px 14px;
+      border-radius: 10px;
       font-size: 0.85rem;
       font-weight: 400;
-      max-width: 300px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+      max-width: 320px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.3);
       z-index: 10000;
-      line-height: 1.4;
-      pointer-events: none;
+      line-height: 1.5;
+      pointer-events: auto;
     }
 
-    mark.highlight {
-      background-color: #fef08a;
-      color: #854d0e;
-      font-weight: bold;
-      padding: 1px 4px;
-      border-radius: 4px;
+    #globalTooltip strong {
+      color: #f59e0b;
+      display: block;
+      margin-bottom: 4px;
+      border-bottom: 1px solid #334155;
+      padding-bottom: 3px;
+    }
+
+    #globalTooltip ol {
+      margin-left: 1rem;
+      padding-left: 0;
+    }
+
+    #globalTooltip li {
+      margin-bottom: 3px;
     }
 
     .empty-state {
@@ -296,9 +395,9 @@
       padding: 2.5rem 1rem;
       color: var(--muted);
       background: white;
-      border-radius: 10px;
+      border-radius: 12px;
       border: 1px solid var(--border);
-      font-size: 0.95rem;
+      font-size: 0.92rem;
     }
 
     .footer {
@@ -306,10 +405,17 @@
       margin-top: 2rem;
       padding: 1rem 0;
       color: var(--muted);
-      font-size: 0.8rem;
+      font-size: 0.78rem;
       border-top: 1px solid var(--border);
       width: 100%;
-      max-width: 900px;
+    }
+
+    @media (max-width: 600px) {
+      body { padding: 0.5rem 0.25rem; }
+      .search-panel { padding: 0.85rem; }
+      .excel-grid { grid-template-columns: 1fr; }
+      .search-row { flex-direction: column; }
+      .btn-search, .btn-reset { width: 100%; }
     }
   </style>
 </head>
@@ -320,20 +426,21 @@
 <div class="container">
   <div class="header">
     <h1>Kur'an-ı Kerim Meal & Özel Sözlük Paneli</h1>
-    <p>%100 Offline Mod | Yerel Veritabanı | Excel Sözlük Eşleştirme</p>
+    <p>%100 Offline Mod | Akıllı Şapkasız Arama | Çoklu Anlam Desteği</p>
     <div class="special-tag">GRUP DİNAMİK 2026-2027 ÖZEL ÇALIŞMASIDIR</div>
   </div>
 
   <div class="status-container">
     <span class="badge-status" id="dbStatus">⏳ Ayetler Yükleniyor...</span>
-    <span class="badge-status" id="dictStatus" style="background: #f1f5f9; border-color: #cbd5e1; color: #475569;">ℹ️ Sözlük Yüklenmedi</span>
+    <span class="badge-status" id="dictStatus">ℹ️ Sözlük Yüklenmedi</span>
+    <span class="badge-status" id="esmaStatus">ℹ️ Esmalar Yüklenmedi</span>
   </div>
 
   <div class="search-panel">
     <div>
       <div class="section-title">1. Sure İsmi Veya Numarası İle Arama (%85 Akıllı Eşleşme)</div>
       <div class="search-row">
-        <input type="text" id="surahSearchInput" placeholder="Sure adı veya numarası yazın (Örn: 2, nisa, bakara, fatiha)..." oninput="onSurahInput()">
+        <input type="text" id="surahSearchInput" placeholder="Sure adı veya numarası (Örn: 2, nisa, bakara, fatiha)..." oninput="onSurahInput()">
         <div class="suggestions-box" id="suggestionsBox"></div>
       </div>
     </div>
@@ -348,11 +455,19 @@
     </div>
 
     <div>
-      <div class="section-title">3. Özel Excel Sözlük / Kavram Dosyası Yükleme</div>
-      <div class="excel-upload-box">
-        <span id="excelStatusText" style="font-size: 0.85rem; color: #475569;">Excel sözlük dosyası yüklenmedi. (A Sütunu: Kelime, B Sütunu: Anlam)</span>
-        <label class="btn-excel" for="excelFileInput" onclick="triggerFileInput()">📁 Excel Yükle</label>
-        <input type="file" id="excelFileInput" accept=".xlsx, .xls, .csv" onchange="handleExcelUpload(event)">
+      <div class="section-title">3. Özel Excel Dosyaları Yükleme (Sözlük & Esmalar)</div>
+      <div class="excel-grid">
+        <div class="excel-upload-box">
+          <span id="excelStatusText" style="font-size: 0.8rem; color: #475569;">1. Excel Sözlük Dosyası</span>
+          <label class="btn-excel" for="excelFileInput" onclick="triggerFileInput('excelFileInput')">📁 Sözlük Yükle</label>
+          <input type="file" id="excelFileInput" accept=".xlsx, .xls, .csv" onchange="handleExcelUpload(event, 'dict')">
+        </div>
+
+        <div class="excel-upload-box">
+          <span id="esmaStatusText" style="font-size: 0.8rem; color: #475569;">2. Excel Esma-ül Hüsna Dosyası</span>
+          <label class="btn-excel esma-btn" for="esmaFileInput" onclick="triggerFileInput('esmaFileInput')">✨ Esma Yükle</label>
+          <input type="file" id="esmaFileInput" accept=".xlsx, .xls, .csv" onchange="handleExcelUpload(event, 'esma')">
+        </div>
       </div>
     </div>
   </div>
@@ -376,7 +491,7 @@
     "Fussilet", "Şûrâ", "Zuhruf", "Duhân", "Câsiye", "Ahkâf", "Muhammed", "Fetih", "Hucurât", "Kâf",
     "Zâriyât", "Tûr", "Necm", "Kamer", "Rahmân", "Vâkıa", "Hadîd", "Mücâdele", "Haşr", "Mümtehine",
     "Saff", "Cuma", "Münâfikûn", "Teğâbün", "Talâk", "Tahrîm", "Mülk", "Kalem", "Hâkka", "Meâric",
-    "Nûh", "Cin", "Müzzemmil", "Müddessir", "Kıyâme", "İnsân", "Mürselât", "Nebe'", "Nâziât", "Abes e",
+    "Nûh", "Cin", "Müzzemmil", "Müddessir", "Kıyâme", "İnsân", "Mürselât", "Nebe'", "Nâziât", "Abese",
     "Tekvîr", "İnfitâr", "Mutaffifîn", "İnşikâk", "Bürûc", "Târık", "A'lâ", "Gâşiye", "Fecr", "Beled",
     "Şems", "Leyl", "Duhâ", "İnşirâh", "Tîn", "Alak", "Kadr", "Beyyine", "Zilzâl", "Âdiyât",
     "Kâria", "Tekâsür", "Asr", "Hümeze", "Fîl", "Kureyş", "Mâûn", "Kevser", "Kâfirûn", "Nasr",
@@ -384,7 +499,8 @@
   ];
 
   let quranData = [];
-  let excelDictionary = {};
+  let excelDictionary = {}; 
+  let esmaDictionary = {};   
 
   window.addEventListener('DOMContentLoaded', () => {
     initLocalAyetData();
@@ -395,11 +511,10 @@
     const statusEl = document.getElementById('dbStatus');
     if (typeof quranDataList !== 'undefined' && quranDataList.length > 0) {
       quranData = quranDataList;
-      statusEl.className = "badge-status";
       statusEl.style.background = "#f0fdf4";
       statusEl.style.borderColor = "#86efac";
       statusEl.style.color = "#166534";
-      statusEl.innerText = `✅ Yerel Ayetler Hazır! (${quranData.length} Ayet)`;
+      statusEl.innerText = `✅ Ayetler Hazır (${quranData.length})`;
     } else {
       statusEl.innerText = `❌ 'ayetler.js' bulunamadı!`;
       statusEl.style.background = "#fef2f2";
@@ -416,9 +531,45 @@
     return text.replace(/[\r\n\t]+/g, ' ').replace(/\s+/g, ' ').trim();
   }
 
-  function parseExcelArrayBuffer(buffer, fileName) {
-    const dictStatusEl = document.getElementById('dictStatus');
-    const statusText = document.getElementById('excelStatusText');
+  function normalizeTR(str) {
+    if (!str) return "";
+    return str
+      .replace(/İ/g, "i").replace(/I/g, "ı")
+      .replace(/â/g, "a").replace(/Â/g, "a")
+      .replace(/î/g, "i").replace(/Î/g, "i")
+      .replace(/û/g, "u").replace(/Û/g, "u")
+      .toLowerCase().trim();
+  }
+
+  function triggerFileInput(id) {
+    document.getElementById(id).click();
+  }
+
+  function handleExcelUpload(event, type) {
+    const file = event.target.files[0];
+    const statusText = document.getElementById(type === 'dict' ? 'excelStatusText' : 'esmaStatusText');
+    if (!file) return;
+
+    if (typeof XLSX === 'undefined') {
+      statusText.innerHTML = `❌ <b>Excel Kütüphanesi Eksik!</b>`;
+      statusText.style.color = "#b91c1c";
+      return;
+    }
+
+    statusText.innerHTML = `⏳ Okunuyor...`;
+    statusText.style.color = "#0284c7";
+
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      parseExcelArrayBuffer(e.target.result, file.name, type);
+    };
+    reader.readAsArrayBuffer(file);
+  }
+
+  function parseExcelArrayBuffer(buffer, fileName, type) {
+    const isDict = type === 'dict';
+    const statusBadge = document.getElementById(isDict ? 'dictStatus' : 'esmaStatus');
+    const statusText = document.getElementById(isDict ? 'excelStatusText' : 'esmaStatusText');
 
     try {
       const data = new Uint8Array(buffer);
@@ -426,7 +577,7 @@
       const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
       const jsonData = XLSX.utils.sheet_to_json(firstSheet, { header: 1 });
 
-      excelDictionary = {};
+      let targetDict = {};
       let count = 0;
 
       jsonData.forEach(row => {
@@ -436,68 +587,48 @@
           let meaning = cleanMeaning(rawMeaning);
 
           if (term && meaning) {
-            excelDictionary[term.toLowerCase()] = { original: term, meaning: meaning };
+            let key = normalizeTR(term);
+            if (!targetDict[key]) {
+              targetDict[key] = { original: term, meanings: [] };
+            }
+            if (!targetDict[key].meanings.includes(meaning)) {
+              targetDict[key].meanings.push(meaning);
+            }
             count++;
           }
         }
       });
 
       if (count === 0) {
-        statusText.innerHTML = `⚠️ <b>Sözlükte Veri Bulunamadı!</b> (A: Kelime, B: Anlam)`;
+        statusText.innerHTML = `⚠️ <b>Veri Bulunamadı!</b>`;
         statusText.style.color = "#b91c1c";
         return;
       }
 
-      dictStatusEl.className = "badge-status";
-      dictStatusEl.style.background = "#f0fdf4";
-      dictStatusEl.style.borderColor = "#86efac";
-      dictStatusEl.style.color = "#166534";
-      dictStatusEl.innerText = `✅ Sözlük Hazır! (${count} Kelime)`;
-
-      statusText.innerHTML = `✅ <b>${count} Kelimelik Sözlük Yüklendi!</b> (${fileName})`;
-      statusText.style.color = "#166534";
+      if (isDict) {
+        excelDictionary = targetDict;
+        statusBadge.style.background = "#f0fdf4";
+        statusBadge.style.borderColor = "#86efac";
+        statusBadge.style.color = "#166534";
+        statusBadge.innerText = `✅ Sözlük (${count})`;
+        statusText.innerHTML = `✅ <b>${count} Kelime</b> (${fileName})`;
+        statusText.style.color = "#166534";
+      } else {
+        esmaDictionary = targetDict;
+        statusBadge.style.background = "#f3e8ff";
+        statusBadge.style.borderColor = "#e9d5ff";
+        statusBadge.style.color = "#6b21a8";
+        statusBadge.innerText = `✨ Esmalar (${count})`;
+        statusText.innerHTML = `✨ <b>${count} Esma</b> (${fileName})`;
+        statusText.style.color = "#6b21a8";
+      }
 
       refreshCurrentView();
 
     } catch (err) {
-      statusText.innerHTML = `❌ <b>Okuma Hatası!</b> Geçerli bir Excel dosyası seçin.`;
+      statusText.innerHTML = `❌ <b>Okuma Hatası!</b>`;
       statusText.style.color = "#b91c1c";
     }
-  }
-
-  function handleExcelUpload(event) {
-    const file = event.target.files[0];
-    const statusText = document.getElementById('excelStatusText');
-    if (!file) return;
-
-    if (typeof XLSX === 'undefined') {
-      statusText.innerHTML = `❌ <b>Excel Kütüphanesi Eksik!</b>`;
-      statusText.style.color = "#b91c1c";
-      return;
-    }
-
-    statusText.innerHTML = `⏳ Dosya okunuyor...`;
-    statusText.style.color = "#0284c7";
-
-    const reader = new FileReader();
-    reader.onload = function(e) {
-      parseExcelArrayBuffer(e.target.result, file.name);
-    };
-    reader.readAsArrayBuffer(file);
-  }
-
-  function triggerFileInput() {
-    document.getElementById('excelFileInput').click();
-  }
-
-  function normalizeTR(str) {
-    if (!str) return "";
-    return str
-      .replace(/İ/g, "i").replace(/I/g, "ı")
-      .replace(/â/g, "a").replace(/Â/g, "a")
-      .replace(/î/g, "i").replace(/Î/g, "i")
-      .replace(/û/g, "u").replace(/Û/g, "u")
-      .toLowerCase().trim();
   }
 
   function calculateSimilarity(s1, s2) {
@@ -567,7 +698,7 @@
         div.className = 'suggestion-item';
         div.innerHTML = `
           <span><b>${m.sureNo}. ${m.sureName}</b> Suresi</span>
-          <span class="similarity-badge">%${m.score} Benzerlik</span>
+          <span class="similarity-badge">%${m.score} Match</span>
         `;
         div.onclick = () => selectSurah(m.sureNo);
         box.appendChild(div);
@@ -620,44 +751,148 @@
     }
   }
 
-  function applyExcelDictionary(text) {
-    if (Object.keys(excelDictionary).length === 0) return text;
+  function escapeRegExp(string) {
+    return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  }
 
-    let words = Object.keys(excelDictionary);
-    words.sort((a, b) => b.length - a.length);
+  function buildFlexibleRegexPattern(termStr) {
+    let chars = termStr.split('');
+    let pattern = chars.map(ch => {
+      let lch = ch.toLowerCase();
+      if (lch === 'a' || lch === 'â') return '[aAâÂ]';
+      if (lch === 'i' || lch === 'î' || lch === 'ı' || lch === 'İ') return '[iİıIîÎ]';
+      if (lch === 'u' || lch === 'û') return '[uUûÛ]';
+      return escapeRegExp(ch);
+    }).join('');
 
-    words.forEach(w => {
-      let termObj = excelDictionary[w];
-      let boundaryBefore = '(?<=^|[^a-zA-ZçğıöşüÇĞİÖŞÜâîûÂÎÛ])';
-      let boundaryAfter = '(?=$|[^a-zA-ZçğıöşüÇĞİÖŞÜâîûÂÎÛ])';
-      
-      let regex = new RegExp(`${boundaryBefore}(${escapeRegExp(termObj.original)})${boundaryAfter}`, 'gi');
-      let encodedKey = encodeURIComponent(w);
-      text = text.replace(regex, `<span class="dict-term" data-key="${encodedKey}">$1</span>`);
-    });
+    let boundaryBefore = '(?<=^|[^a-zA-ZçğıöşüÇĞİÖŞÜâîûÂÎÛ])';
+    let boundaryAfter = '(?=$|[^a-zA-ZçğıöşüÇĞİÖŞÜâîûÂÎÛ])';
 
-    return text;
+    return new RegExp(`${boundaryBefore}(${pattern})${boundaryAfter}`, 'gi');
+  }
+
+  // Arama Yapılan Kelimeyi Vurgulama
+  function highlightSearchQuery(container, query) {
+    if (!query) return;
+    let regex = buildFlexibleRegexPattern(query);
+
+    const traverse = (node) => {
+      if (node.nodeType === Node.TEXT_NODE) {
+        let parent = node.parentNode;
+        if (parent && parent.classList && (parent.classList.contains('dict-term') || parent.classList.contains('esma-term') || parent.classList.contains('highlight'))) {
+          return;
+        }
+        let val = node.nodeValue;
+        if (regex.test(val)) {
+          let span = document.createElement('span');
+          span.innerHTML = val.replace(regex, `<mark class="highlight">$1</mark>`);
+          parent.replaceChild(span, node);
+        }
+      } else if (node.nodeType === Node.ELEMENT_NODE) {
+        if (!node.classList.contains('dict-term') && !node.classList.contains('esma-term') && !node.classList.contains('highlight')) {
+          Array.from(node.childNodes).forEach(traverse);
+        }
+      }
+    };
+
+    traverse(container);
+  }
+
+  // Sözlük ve Esmaları İşaretleme
+  function applyDictionaryToElement(container) {
+    const processDict = (dict, className, type) => {
+      let keys = Object.keys(dict).sort((a, b) => b.length - a.length);
+      keys.forEach(normKey => {
+        let termObj = dict[normKey];
+        let regex = buildFlexibleRegexPattern(termObj.original);
+        let encodedKey = encodeURIComponent(normKey);
+
+        const highlightNodes = (node) => {
+          if (node.nodeType === Node.TEXT_NODE) {
+            let parent = node.parentNode;
+            if (parent && parent.classList && (parent.classList.contains('dict-term') || parent.classList.contains('esma-term') || parent.classList.contains('highlight'))) {
+              return;
+            }
+            let val = node.nodeValue;
+            if (regex.test(val)) {
+              let span = document.createElement('span');
+              span.innerHTML = val.replace(regex, `<span class="${className}" data-type="${type}" data-key="${encodedKey}">$1</span>`);
+              parent.replaceChild(span, node);
+            }
+          } else if (node.nodeType === Node.ELEMENT_NODE) {
+            if (!node.classList.contains('dict-term') && !node.classList.contains('esma-term') && !node.classList.contains('highlight')) {
+              Array.from(node.childNodes).forEach(highlightNodes);
+            }
+          }
+        };
+
+        highlightNodes(container);
+      });
+    };
+
+    if (Object.keys(excelDictionary).length > 0) {
+      processDict(excelDictionary, 'dict-term', 'dict');
+    }
+
+    if (Object.keys(esmaDictionary).length > 0) {
+      processDict(esmaDictionary, 'esma-term', 'esma');
+    }
   }
 
   function initTooltipEvents() {
     const tooltip = document.getElementById('globalTooltip');
 
-    document.body.addEventListener('mouseover', function(e) {
-      if (e.target.classList.contains('dict-term')) {
-        let key = decodeURIComponent(e.target.getAttribute('data-key'));
-        if (excelDictionary[key]) {
-          tooltip.innerText = excelDictionary[key].meaning;
-          tooltip.style.display = 'block';
+    function showTooltip(target) {
+      let type = target.getAttribute('data-type');
+      let key = decodeURIComponent(target.getAttribute('data-key'));
+      let dict = type === 'esma' ? esmaDictionary : excelDictionary;
 
-          let rect = e.target.getBoundingClientRect();
-          tooltip.style.left = (rect.left + window.scrollX + (rect.width / 2) - 100) + 'px';
-          tooltip.style.top = (rect.top + window.scrollY - tooltip.offsetHeight - 8) + 'px';
+      if (dict && dict[key]) {
+        let data = dict[key];
+        let meaningsHtml = "";
+
+        if (data.meanings.length === 1) {
+          meaningsHtml = `<div>${data.meanings[0]}</div>`;
+        } else {
+          meaningsHtml = "<ol>" + data.meanings.map(m => `<li>${m}</li>`).join('') + "</ol>";
         }
+
+        let titlePrefix = type === 'esma' ? '✨ Esma-ül Hüsna' : '📖 Sözlük Anlamı';
+        tooltip.innerHTML = `<strong>${titlePrefix}: ${data.original}</strong>${meaningsHtml}`;
+        tooltip.style.display = 'block';
+
+        let rect = target.getBoundingClientRect();
+        let left = rect.left + window.scrollX + (rect.width / 2) - 130;
+        if (left < 10) left = 10;
+        if (left + 280 > window.innerWidth) left = window.innerWidth - 290;
+
+        let top = rect.top + window.scrollY - tooltip.offsetHeight - 8;
+        if (top < window.scrollY + 10) {
+          top = rect.bottom + window.scrollY + 8;
+        }
+
+        tooltip.style.left = left + 'px';
+        tooltip.style.top = top + 'px';
+      }
+    }
+
+    document.body.addEventListener('mouseover', function(e) {
+      if (e.target.classList.contains('dict-term') || e.target.classList.contains('esma-term')) {
+        showTooltip(e.target);
       }
     });
 
     document.body.addEventListener('mouseout', function(e) {
-      if (e.target.classList.contains('dict-term')) {
+      if (e.target.classList.contains('dict-term') || e.target.classList.contains('esma-term')) {
+        tooltip.style.display = 'none';
+      }
+    });
+
+    document.body.addEventListener('click', function(e) {
+      if (e.target.classList.contains('dict-term') || e.target.classList.contains('esma-term')) {
+        showTooltip(e.target);
+        e.stopPropagation();
+      } else if (!tooltip.contains(e.target)) {
         tooltip.style.display = 'none';
       }
     });
@@ -676,12 +911,13 @@
     }
 
     let totalOccurrenceCount = 0;
-    const regex = highlightQuery ? new RegExp(`(${escapeRegExp(highlightQuery)})`, 'gi') : null;
 
     if (highlightQuery) {
+      let normQuery = normalizeTR(highlightQuery);
       list.forEach(item => {
-        let matches = normalizeTR(item.metin).match(new RegExp(escapeRegExp(normalizeTR(highlightQuery)), 'g'));
-        if (matches) totalOccurrenceCount += matches.length;
+        let normText = normalizeTR(item.metin);
+        let matches = normText.split(normQuery).length - 1;
+        totalOccurrenceCount += matches;
       });
     }
 
@@ -699,46 +935,36 @@
     }
 
     list.forEach(item => {
-      let textContent = item.metin;
-
-      textContent = applyExcelDictionary(textContent);
-
-      if (regex) {
-        let tempDiv = document.createElement('div');
-        tempDiv.innerHTML = textContent;
-        highlightTextNodes(tempDiv, regex);
-        textContent = tempDiv.innerHTML;
-      }
-
       let sureNum = parseInt(item.sureNo);
       let sName = sureListesi[sureNum] || item.sure || "Sure";
       let surahDisplayName = `${sureNum}. ${sName} Suresi`;
 
       const card = document.createElement('div');
       card.className = 'verse-card';
-      card.innerHTML = `
-        <div class="verse-header">
-          <span class="surah-link" onclick="selectSurah(${sureNum})">${surahDisplayName} ↗</span>
-          <span class="verse-badge">${item.ayet}. Ayet</span>
-        </div>
-        <div class="verse-text">${textContent}</div>
+      
+      const verseHeader = document.createElement('div');
+      verseHeader.className = 'verse-header';
+      verseHeader.innerHTML = `
+        <span class="surah-link" onclick="selectSurah(${sureNum})">${surahDisplayName} ↗</span>
+        <span class="verse-badge">${item.ayet}. Ayet</span>
       `;
+
+      const verseTextDiv = document.createElement('div');
+      verseTextDiv.className = 'verse-text';
+      verseTextDiv.textContent = item.metin;
+
+      // 1. Sözlük (Mavi) ve Esma (Mor) İşaretleme
+      applyDictionaryToElement(verseTextDiv);
+
+      // 2. Arama Yapılan Kelimeyi Vurgulama (Parlak Sarı Vurgu)
+      if (highlightQuery) {
+        highlightSearchQuery(verseTextDiv, highlightQuery);
+      }
+
+      card.appendChild(verseHeader);
+      card.appendChild(verseTextDiv);
       resultsContainer.appendChild(card);
     });
-  }
-
-  function highlightTextNodes(element, regex) {
-    for (let node of Array.from(element.childNodes)) {
-      if (node.nodeType === Node.TEXT_NODE) {
-        if (regex.test(node.nodeValue)) {
-          const span = document.createElement('span');
-          span.innerHTML = node.nodeValue.replace(regex, '<mark class="highlight">$1</mark>');
-          node.parentNode.replaceChild(span, node);
-        }
-      } else if (node.nodeType === Node.ELEMENT_NODE) {
-        highlightTextNodes(node, regex);
-      }
-    }
   }
 
   function resetAll() {
@@ -748,10 +974,6 @@
     document.getElementById('stats').style.display = "none";
     document.getElementById('stats').innerText = "";
     document.getElementById('results').innerHTML = '<div class="empty-state">Lütfen yukarıdan bir sure adı yazın veya aramak istediğiniz kelimeyi girin.</div>';
-  }
-
-  function escapeRegExp(string) {
-    return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
   }
 </script>
 
