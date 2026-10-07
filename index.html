@@ -444,27 +444,38 @@
       width: 100%;
     }
 
+    /* --- YENİLENEN MOBİL GÖRÜNÜM DÜZENLEMELERİ --- */
     @media (max-width: 640px) {
-      body { padding: 0.4rem 0.2rem; }
-      .search-panel { padding: 0.65rem; gap: 8px; }
-      .search-row { flex-wrap: wrap; }
+      body { padding: 0.5rem 0.3rem; }
+      .search-panel { padding: 0.85rem; gap: 12px; }
+      .search-row { flex-wrap: wrap; gap: 8px; }
       
       .search-row .input-wrapper {
         flex: 1 1 100%;
         width: 100%;
       }
 
+      /* Mobil Arama Kutusu Boyut ve Dokunma Alanı Genişletmesi */
+      input[type="text"] {
+        height: 44px;
+        padding: 0.65rem 0.85rem;
+        font-size: 16px !important; /* iOS otomatik zoom yapmasını engeller ve rahat okunur */
+      }
+
       .btn-search { 
         flex: 2 1 auto;
+        height: 42px;
+        font-size: 0.9rem;
       }
 
       .btn-reset { 
         flex: 1 1 auto;
+        height: 42px;
+        font-size: 0.9rem;
       }
 
       .excel-grid { grid-template-columns: 1fr; }
-      .excel-upload-box { height: 36px; }
-      input[type="text"], .btn-search, .btn-reset { height: 36px; }
+      .excel-upload-box { height: 42px; }
     }
   </style>
 </head>
@@ -813,7 +824,6 @@
     return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
   }
 
-  // 2. YÖNTEM: İZİNLİ TÜRKÇE EKLER İLE DÜZENLENMİŞ REGEX FONKSİYONU
   function buildFlexibleRegexPattern(termStr, globalFlag = true) {
     let chars = termStr.split('');
     let pattern = chars.map(ch => {
@@ -830,12 +840,8 @@
     }).join('');
 
     let flags = globalFlag ? 'gi' : 'i';
-
-    // Türkçe yaygın isim ve fiil eklerini tanımlayan yapı
-    // Bu sayede "sabır-dan", "acı-lar", "söz-ler-i" eşleşir ama "acıkırsın" içindeki "kir" elenir.
     const trSuffixes = "(?:lar|ler|da|de|dan|den|ya|ye|a|e|ın|in|un|ün|ım|im|sı|si|su|sü|nız|niz|dir|dirler|dirlerse)?";
 
-    // Kökün önünde harf olamaz + kökten sonra sadece geçerli Türkçe ekler gelebilir (sonrasında kelime bitmelidir)
     return new RegExp(`(?<![a-zA-ZçğıöşüÇĞİÖŞÜ])(${pattern}${trSuffixes})(?![a-zA-ZçğıöşüÇĞİÖŞÜ])`, flags);
   }
 
