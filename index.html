@@ -444,7 +444,6 @@
       width: 100%;
     }
 
-    /* --- YENİLENEN MOBİL GÖRÜNÜM DÜZENLEMELERİ --- */
     @media (max-width: 640px) {
       body { padding: 0.5rem 0.3rem; }
       .search-panel { padding: 0.85rem; gap: 12px; }
@@ -455,11 +454,10 @@
         width: 100%;
       }
 
-      /* Mobil Arama Kutusu Boyut ve Dokunma Alanı Genişletmesi */
       input[type="text"] {
         height: 44px;
         padding: 0.65rem 0.85rem;
-        font-size: 16px !important; /* iOS otomatik zoom yapmasını engeller ve rahat okunur */
+        font-size: 16px !important;
       }
 
       .btn-search { 
@@ -486,8 +484,8 @@
 <div class="container">
   <div class="header">
     <h1>Kur'an-ı Kerim Meal & Özel Sözlük Paneli</h1>
-    <p>%100 Offline Mod | Bireysel Sözlük-Esmalar Yüklenebilen| Çoklu Anlam Desteği</p>
-    <div class="special-tag">DİNAMİK 2026-2027 GRUP ÇALIŞMASIDIR</div>
+    <p>%100 Offline Mod | Bireysel Sözlük-Esmalar| Çoklu Anlam Desteği</p>
+    <div class="special-tag">DİNAMİK GRUP ÇALIŞMASIDIR</div>
   </div>
 
   <div class="status-container">
@@ -538,12 +536,12 @@
 
   <div class="stats" id="stats" style="display: none;"></div>
   <div class="results" id="results">
-    <div class="empty-state">Lütfen yukarıdan bir sure adı yazın veya aramak istediğiniz kelimeyi girin.Sözlük ve esmalara Kendi excel dosyalarınızı yüklemelisiniz.(Excel sayfasında "A" sütunu kelime "B" Stunu anlam olacak şekilde kaydedilmelidir.)</div>
+    <div class="empty-state">Lütfen yukarıdan bir sure adı yazın veya aramak istediğiniz kelimeyi girin. Sözlük ve esmalara kendi Excel dosyalarınızı yüklemelisiniz. (Excel sayfasında "A" sütunu kelime, "B" sütunu anlam olacak şekilde kaydedilmelidir.)</div>
   </div>
 </div>
 
 <div class="footer">
-  DİNAMİK 2026-2027 GRUP ÇALIŞMASIDIR
+  DİNAMİK GRUP ÇALIŞMASIDIR
 </div>
 
 <script>
@@ -824,6 +822,7 @@
     return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
   }
 
+  /* --- Sadece Ayet Kelimelerini Ararken Kullanılan Esnek Regex (Ekleri Kapsar) --- */
   function buildFlexibleRegexPattern(termStr, globalFlag = true) {
     let chars = termStr.split('');
     let pattern = chars.map(ch => {
@@ -840,9 +839,30 @@
     }).join('');
 
     let flags = globalFlag ? 'gi' : 'i';
-    const trSuffixes = "(?:lar|ler|da|de|dan|den|ya|ye|a|e|ın|in|un|ün|ım|im|sı|si|su|sü|nız|niz|dir|dirler|dirlerse)?";
+    return new RegExp(`(${pattern}[a-zA-ZçğıöşüÇĞİÖŞÜ]*)`, flags);
+  }
 
-    return new RegExp(`(?<![a-zA-ZçğıöşüÇĞİÖŞÜ])(${pattern}${trSuffixes})(?![a-zA-ZçğıöşüÇĞİÖŞÜ])`, flags);
+  /* --- Güncellenmiş Regex Fonksiyonu (Ekleri Kapsayan Tam / Kök Kelime Eşleşmesi) --- */
+  function buildExactRegexPattern(termStr, globalFlag = true) {
+    let chars = termStr.split('');
+    let pattern = chars.map(ch => {
+      let lch = ch.toLowerCase();
+      if (lch === 'a' || lch === 'â') return '[aAâÂ]';
+      if (lch === 'i' || lch === 'î' || lch === 'ı' || lch === 'İ') return '[iİıIîÎ]';
+      if (lch === 'u' || lch === 'û') return '[uUûÛ]';
+      if (lch === 'o' || lch === 'ô') return '[oOôÔ]';
+      if (lch === 'e' || lch === 'ê') return '[eEêÊ]';
+      if (lch === 's' || lch === 'ş' || lch === 'Ş') return '[sSşŞ]';
+      if (lch === 'c' || lch === 'ç' || lch === 'Ç') return '[cCçÇ]';
+      if (lch === 'g' || lch === 'ğ' || lch === 'Ğ') return '[gGğĞ]';
+      return escapeRegExp(ch);
+    }).join('');
+
+    let flags = globalFlag ? 'gi' : 'i';
+    
+    // Değişiklik Burada: Sadece kelime başında sınır arıyoruz, 
+    // sonrasındaki eklerin (ünüzde, ler,ü vb.) yakalanabilmesi için son sınırlama esnetildi.
+    return new RegExp(`(?:^|[^a-zA-ZçğıöşüÇĞİÖŞÜ])(${pattern}[a-zA-ZçğıöşüÇĞİÖŞÜ]*)`, flags);
   }
 
   function highlightSearchQuery(container, query) {
@@ -897,13 +917,14 @@
       }
     });
 
+    // Uzun kelimeleri önce yakalamak için sıralıyoruz
     let sortedKeys = Object.keys(combinedMap).sort((a, b) => b.length - a.length);
 
     sortedKeys.forEach(normKey => {
       let item = combinedMap[normKey];
       let origText = item.inEsma ? item.origEsma : item.origDict;
       
-      let globalRegex = buildFlexibleRegexPattern(origText, true);
+      let globalRegex = buildExactRegexPattern(origText, true);
       let encodedKey = encodeURIComponent(normKey);
 
       let className = "dict-term";
@@ -917,11 +938,7 @@
         typeAttr = "esma";
       }
 
-      let hasBeenHighlightedInThisVerse = false;
-
       const traverseAndReplaceAll = (node) => {
-        if (hasBeenHighlightedInThisVerse) return;
-
         if (node.nodeType === Node.TEXT_NODE) {
           let parent = node.parentNode;
           if (parent && parent.classList && (
@@ -936,14 +953,14 @@
           let val = node.nodeValue;
           let match;
 
-          if (!hasBeenHighlightedInThisVerse && globalRegex.test(val)) {
+          if (globalRegex.test(val)) {
             globalRegex.lastIndex = 0;
             let frag = document.createDocumentFragment();
             let lastIdx = 0;
 
-            if ((match = globalRegex.exec(val)) !== null) {
-              let matchedText = match[0];
-              let matchIndex = match.index;
+            while ((match = globalRegex.exec(val)) !== null) {
+              let matchedText = match[1]; // Tam kelime yakalanan grup
+              let matchIndex = match.index + match[0].indexOf(matchedText);
 
               if (matchIndex > lastIdx) {
                 frag.appendChild(document.createTextNode(val.substring(lastIdx, matchIndex)));
@@ -957,8 +974,6 @@
               frag.appendChild(span);
 
               lastIdx = matchIndex + matchedText.length;
-              
-              hasBeenHighlightedInThisVerse = true;
             }
 
             if (lastIdx < val.length) {
@@ -1137,7 +1152,7 @@
     document.getElementById('suggestionsBox').style.display = "none";
     document.getElementById('stats').style.display = "none";
     document.getElementById('stats').innerText = "";
-    document.getElementById('results').innerHTML = '<div class="empty-state">Lütfen yukarıdan bir sure adı yazın veya aramak istediğiniz kelimeyi girin.Sözlük ve esmalara Kendi excel dosyalarınızı yüklemelisiniz.(Excel sayfasında "A" sütunu kelime "B" Stunu anlam olacak şekilde kaydedilmelidir.) </div>';
+    document.getElementById('results').innerHTML = '<div class="empty-state">Lütfen yukarıdan bir sure adı yazın veya aramak istediğiniz kelimeyi girin. Sözlük ve esmalara kendi Excel dosyalarınızı yüklemelisiniz. (Excel sayfasında "A" sütunu kelime, "B" sütunu anlam olacak şekilde kaydedilmelidir.)</div>';
   }
 </script>
 
